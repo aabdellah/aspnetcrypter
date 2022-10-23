@@ -13,12 +13,12 @@ namespace LowLevelDesign.AspNetCrypter
     public static class Program
     {
         private static readonly Dictionary<string, Purpose> purposeMap = new Dictionary<string, Purpose>(StringComparer.Ordinal) {
-            { "owin.cookie", Purpose.User_MachineKey_Protect.AppendSpecificPurposes(
+            {"owin.cookie", Purpose.User_MachineKey_Protect.AppendSpecificPurposes(
                 new [] {
                     "Microsoft.Owin.Security.Cookies.CookieAuthenticationMiddleware",
                     "ApplicationCookie",
-                    "v1"
-                }) }
+                    "v1"}) },
+            { "forms.cookie", new Purpose("FormsAuthentication.Ticket") }
         };
 
         public static void Main(string[] args)
@@ -31,7 +31,7 @@ namespace LowLevelDesign.AspNetCrypter
             {
                 { "vk=", "the validation key (in hex)", v => validationKeyAsText = v },
                 { "dk=", "the decryption key (in hex)", v => decryptionKeyAsText = v },
-                { "p|purpose=", "the encryption context\n(currently only: owin.cookie)", v => purposeKey = v },
+                { "p|purpose=", "the encryption context\n(currently only: owin.cookie or forms.cookie)", v => purposeKey = v },
                 { "base64", "data is provided in base64 format (otherwise we assume hex)", v => isBase64 = v != null },
                 { "i|input=", "input data file (when too big for command line)", v => fileToDecrypt = v },
                 { "h|help", "Show this message and exit", v => showhelp = v != null },
