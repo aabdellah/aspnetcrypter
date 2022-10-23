@@ -13,7 +13,7 @@ namespace LowLevelDesign.AspNetCrypter
     public static class Program
     {
         private static readonly Dictionary<string, Purpose> purposeMap = new Dictionary<string, Purpose>(StringComparer.Ordinal) {
-            {"owin.cookie", Purpose.User_MachineKey_Protect.AppendSpecificPurposes(
+            { "owin.cookie", Purpose.User_MachineKey_Protect.AppendSpecificPurposes(
                 new [] {
                     "Microsoft.Owin.Security.Cookies.CookieAuthenticationMiddleware",
                     "ApplicationCookie",
@@ -114,6 +114,26 @@ namespace LowLevelDesign.AspNetCrypter
             var decryptedData = decryptor.DecryptData(encryptedData);
             Console.WriteLine(Hexify.Hex.PrettyPrint(decryptedData));
             Console.WriteLine();
+
+            if ("forms.cookie".Equals(purposeKey, StringComparison.Ordinal))
+            {
+                WriteFormsAuthenticadtionTicket(decryptedData);
+            }
+        }
+
+        static void WriteFormsAuthenticadtionTicket(byte[] data)
+        {
+            var ticket = FormsAuthenticationTicketSerializer.Deserialize(data, data.Length);
+            Console.WriteLine("Name: {0}", ticket.Name);
+            Console.WriteLine("UserData: {0}", ticket.UserData);
+            Console.WriteLine("CookiePath: {0}", ticket.CookiePath);
+            Console.WriteLine("IssueDate: {0}", ticket.IssueDate);
+            Console.WriteLine("IssueDateUtc: {0}", ticket.IssueDateUtc);
+            Console.WriteLine("Expiration: {0}", ticket.Expiration);
+            Console.WriteLine("ExpirationUtc: {0}", ticket.ExpirationUtc);
+            Console.WriteLine("Expired: {0}", ticket.Expired);
+            Console.WriteLine("IsPersistent: {0}", ticket.IsPersistent);
+            Console.WriteLine("Version: {0}", ticket.Version);
         }
 
         static void ShowHelp(OptionSet p)
@@ -128,7 +148,6 @@ namespace LowLevelDesign.AspNetCrypter
             Console.WriteLine("Options:");
             p.WriteOptionDescriptions(Console.Out);
             Console.WriteLine();
-
         }
     }
 }
